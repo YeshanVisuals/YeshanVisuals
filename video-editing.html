@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Video Editing — Yeshan</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .video-media iframe{width:100%;height:100%;border:0;border-radius:inherit;display:block}
+    .video-empty{grid-column:1/-1;text-align:center;padding:70px 20px;border:1px dashed rgba(0,0,0,.15);border-radius:24px}
+    .video-empty h3{margin:0 0 8px}
+    .video-empty p{margin:0;opacity:.7}
+  </style>
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap nav-inner">
+    <a class="nav-logo" href="index.html">YESHAN<span>•</span></a>
+    <button class="menu-btn">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="graphic-design.html">Graphic Design</a></li>
+      <li><a class="active" href="video-editing.html">Video Editing</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <a class="back" href="index.html">← Back home</a>
+      <div class="eyebrow">Video Editing / CapCut</div>
+      <h1>Video edits built for attention.</h1>
+      <p>Reels, promos, event recaps and other video editing projects.</p>
+    </div>
+  </section>
+
+  <section class="wrap gallery-head">
+    <div class="kicker">Video projects</div>
+    <h2>Watch the work</h2>
+  </section>
+
+  <div class="wrap">
+    <div id="videoGallery" class="gallery-grid"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span><strong>YESHAN</strong> — Portfolio</span>
+    <span>© 2026</span>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================
+   ADD YOUR YOUTUBE VIDEOS HERE
+   Paste a YouTube video, Shorts, youtu.be, or live link.
+   Example:
+   { url: "https://www.youtube.com/watch?v=ABC123", title: "My Reel" }
+   ========================================================== */
+const youtubeVideos = [
+  { url: "https://youtube.com/shorts/kFxKf4LLzx0?feature=share", title: "Reel / Short-form Edit" },
+  // { url: "https://www.youtube.com/watch?v=YOUR_VIDEO_ID", title: "Brand Promo" },
+  // { url: "https://www.youtube.com/watch?v=YOUR_VIDEO_ID", title: "Event Recap" },
+];
+
+function youtubeId(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
+    if (u.hostname.includes('youtube.com')) return u.searchParams.get('v') || (u.pathname.match(/\/(?:embed|shorts|live)\/([^/?]+)/) || [])[1] || '';
+  } catch(e) {}
+  return '';
+}
+
+const gallery = document.getElementById('videoGallery');
+const validVideos = youtubeVideos
+  .map(v => ({...v, id: youtubeId(v.url)}))
+  .filter(v => v.id);
+
+if (!validVideos.length) {
+  gallery.innerHTML = `
+    <div class="video-empty">
+      <h3>Video projects coming soon</h3>
+      <p>New video editing projects will appear here.</p>
+    </div>`;
+} else {
+  gallery.innerHTML = validVideos.map((video, index) => `
+    <article class="project-card video-card reveal">
+      <div class="project-media video-media">
+        <iframe
+          src="https://www.youtube.com/embed/${video.id}"
+          title="${escapeHtml(video.title || 'Video Editing Project')}"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
+      </div>
+      <div class="project-info">
+        <h3>${escapeHtml(video.title || `Video Project ${index + 1}`)}</h3>
+        <p>Video editing project</p>
+      </div>
+    </article>`).join('');
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+</script>
+<script src="script.js"></script>
+</body>
+</html>

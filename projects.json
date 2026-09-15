@@ -1,0 +1,8 @@
+{
+  "graphicDesign": {
+    "pattern": "assets/projects/pattern-design/",
+    "tute": "assets/projects/tute-cover-design/",
+    "social": "assets/projects/social-media-post-design/",
+    "printable": "assets/projects/printable-design/"
+  }
+}
