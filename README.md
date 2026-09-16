@@ -10,7 +10,7 @@ Put project images into the matching folder. You do not need to edit HTML or Jav
 - `assets/projects/social-media-post-design/` → `social-01.jpg`, `social-02.jpg`, ... `social-20.jpg`
 - `assets/projects/printable-design/` → `printable-01.jpg`, `printable-02.jpg`, ... `printable-20.jpg`
 
-PNG, JPEG and WEBP are also supported. The page checks each slot automatically and only shows files that exist.
+PNG, JPEG and WEBP are also supported. The gallery creates project cards immediately and lazy-loads images near the viewport. JPG is tried first, with JPEG/PNG/WEBP used only as fallback when needed.
 
 ## Contact details already connected
 - Email: `bimalkayeshan2@gmail.com`

@@ -48,31 +48,36 @@ document.addEventListener('DOMContentLoaded',()=>{
      document.querySelector('#project-kicker').textContent=config.title;
      document.querySelector('#project-heading').textContent='My Projects';
      if(heading)heading.textContent=config.title;
+
      const grid=document.querySelector('#project-grid');
      const empty=document.querySelector('#empty-projects');
+     const exts=['jpg','jpeg','png','webp'];
      let found=0;
-     const tryImage=(slot,extIndex=0)=>{
-       const exts=['jpg','jpeg','png','webp'];
-       if(extIndex>=exts.length){
-         if(slot===20 && found===0){
-           empty.hidden=false;
+
+     // Create the cards immediately. The browser can then lazy-load only images
+     // that are close to the viewport instead of probing 20 x 4 filenames first.
+     for(let slot=1;slot<=20;slot++){
+       const number=String(slot).padStart(2,'0');
+       const base=`assets/projects/${config.folder}/${config.prefix}-${number}`;
+       const card=document.createElement('article');
+       card.className='project-card reveal';
+       card.innerHTML=`<div class="project-media"><img src="${base}.jpg" alt="${config.title} project ${number}" loading="${slot<=4?'eager':'lazy'}" ${slot<=2?'fetchpriority="high"':''} decoding="async"></div><div class="project-info"><span class="pill">${config.title}</span><h3>Project ${number}</h3><p>${config.description}</p></div>`;
+       const img=card.querySelector('img');
+       let extIndex=0;
+       img.addEventListener('load',()=>{found++;}, {once:true});
+       img.addEventListener('error',()=>{
+         extIndex++;
+         if(extIndex<exts.length){
+           img.src=`${base}.${exts[extIndex]}`;
+         }else{
+           card.remove();
+           if(grid.children.length===0) empty.hidden=false;
          }
-         return;
-       }
-       const path=`assets/projects/${config.folder}/${config.prefix}-${String(slot).padStart(2,'0')}.${exts[extIndex]}`;
-       const img=new Image();
-       img.onload=()=>{
-         found++;
-         const card=document.createElement('article');
-         card.className='project-card reveal';
-         card.innerHTML=`<div class="project-media"><img src="${path}" alt="${config.title} project ${slot}" loading="lazy" decoding="async"></div><div class="project-info"><span class="pill">${config.title}</span><h3>Project ${String(slot).padStart(2,'0')}</h3><p>${config.description}</p></div>`;
-         card.addEventListener('click',()=>openLightbox(`${config.title} — Project ${String(slot).padStart(2,'0')}`,path));
-         grid.appendChild(card); observer.observe(card);
-       };
-       img.onerror=()=>tryImage(slot,extIndex+1);
-       img.src=path;
-     };
-     for(let i=1;i<=20;i++)tryImage(i);
+       });
+       card.addEventListener('click',()=>openLightbox(`${config.title} — Project ${number}`,img.currentSrc||img.src));
+       grid.appendChild(card);
+       observer.observe(card);
+     }
    }
  }
 });
